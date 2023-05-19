@@ -1,0 +1,7 @@
+- [x] Converter endereço para inteiro
+- [ ] Validar IP
+- [x] Validar Máscara
+- [ ] Calcular subredes
+- [ ] Identificar endereço de rede
+- [ ] Identificar endereço de broadcast
+- [ ] Identificar quantidade de hosts por subrede
