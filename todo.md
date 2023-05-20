@@ -1,7 +1,16 @@
-- [x] Converter endereço para inteiro
-- [ ] Validar IP
-- [x] Validar Máscara
-- [ ] Calcular subredes
-- [ ] Identificar endereço de rede
-- [ ] Identificar endereço de broadcast
-- [ ] Identificar quantidade de hosts por subrede
+# TODO  
+-[x] Validate Address
+-[x] Convert CIDR to netmask
+-[x] Convert address to integer
+-[x] Get Network
+-[x] Get Broadcast
+-[ ] Variable Network  
+-[ ] Variable IP address  
+-[ ] Variable Netmask  
+-[ ] Variable Broadcast  
+-[ ] Variable First Host  
+-[ ] Variable Last Host  
+-[x] Variable Binary Network  
+-[x] Variable Binary IP address  
+-[x] Variable Binary Netmask  
+-[x] Variable Binary Broadcast
