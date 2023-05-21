@@ -4,13 +4,19 @@
 -[x] Convert address to integer
 -[x] Get Network
 -[x] Get Broadcast
--[ ] Variable Network  
--[ ] Variable IP address  
--[ ] Variable Netmask  
--[ ] Variable Broadcast  
--[ ] Variable First Host  
--[ ] Variable Last Host  
+-[x] Get CIDR
+-[x] Get first host
+-[x] Get last host
+-[x] Variable Network  
+-[x] Variable IP address  
+-[x] Variable Netmask  
+-[x] Variable Broadcast  
+-[x] Variable First Host  
+-[x] Variable Last Host  
 -[x] Variable Binary Network  
 -[x] Variable Binary IP address  
 -[x] Variable Binary Netmask  
 -[x] Variable Binary Broadcast
+-[x] Get formated binary address
+-[ ] Errors codes
+-[ ] Start Django project

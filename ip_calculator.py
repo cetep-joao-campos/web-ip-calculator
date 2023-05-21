@@ -1,3 +1,11 @@
+def get_formated_binary_address(binary_address: list):
+    formated_binary_address = []
+    for octet in binary_address:
+        formated_octet = ''.join(str(bit) for bit in octet)
+        formated_binary_address.append(formated_octet)
+    formated_binary_address = '.'.join(formated_binary_address)
+    return formated_binary_address
+
 def address_to_binary(address: list) -> list:
     binary_address = []
     for octet in address:
@@ -5,7 +13,6 @@ def address_to_binary(address: list) -> list:
         while (octet > 0 or len(binary_octet) < 8):
             binary_octet.insert(0, octet % 2)
             octet = octet // 2
-            #while (octet == 0 and len(binary_octet) < 8):
             if octet == 0 and len(binary_octet) < 8:
                 binary_octet.insert(0, 0)
 
@@ -78,13 +85,45 @@ def get_broadcast(binary_ip, binary_network, cidr):
     binary_broadcast = []
     for i in range(len(binary_ip)):
         binary_broadcast.append([])
-    for j in range(len(binary_ip[i])):
-        if cidr == 0:
-            binary_broadcast[i].append(1)
-        else:
-            binary_broadcast[i].append(binary_network[i][j])
-            cidr -= 1
+        for j in range(len(binary_ip[i])):
+            if cidr == 0:
+                binary_broadcast[i].append(1)
+            else:
+                binary_broadcast[i].append(binary_network[i][j])
+                cidr -= 1
+    print(binary_broadcast)
     return binary_broadcast
+
+def get_cidr(netmask):
+    cidr = 0
+    binary_netmask = address_to_binary(netmask)
+    for octet in binary_netmask:
+        for bit in octet:
+            if bit == 1:
+                cidr += 1
+    return cidr
+
+def binary_to_decimal(address: list):
+    decimal_ip = []
+    delimiter = '.'
+    for octet in address:
+        decimal_octet = 0
+        exponent = 7
+        for bit in octet:
+           decimal_octet += bit * (2 ** exponent) 
+           exponent -= 1
+        decimal_ip.append(str(decimal_octet))
+    return delimiter.join(decimal_ip)
+
+def get_first_host(binary_network):
+    binary_first_host = [octet[:] for octet in binary_network]
+    binary_first_host[-1][-1] = 1
+    return binary_first_host
+
+def get_last_host(binary_broadcast):
+    binary_last_host = [octet[:] for octet in binary_broadcast]
+    binary_last_host[-1][-1] = 0
+    return binary_last_host
 
 def main(address_with_mask: str):
     TYPES_OF_NETMASKS: tuple[str] = ('NETMASK', 'CIDR')
@@ -96,25 +135,36 @@ def main(address_with_mask: str):
         address_with_mask = address_with_mask.split('/')
         type_of_mask = TYPES_OF_NETMASKS[1]
         cidr = validate_ip(address_with_mask[1], type_of_mask)
-        binary_mask = cidr_to_mask(cidr)
+        binary_netmask = cidr_to_mask(cidr)
 
     ip_address = validate_ip(address_with_mask[0])
     if type_of_mask == 'NETMASK':
         netmask = validate_ip(address_with_mask[1], type_of_mask)
-        binary_mask = address_to_binary(netmask)
+        binary_netmask = address_to_binary(netmask)
+        cidr = get_cidr(netmask)
 
     binary_ip = address_to_binary(ip_address)
-
-    binary_network = get_network(binary_ip, binary_mask)
+    binary_network = get_network(binary_ip, binary_netmask)
     binary_broadcast = get_broadcast(binary_ip, binary_network, cidr)
-
-    print(binary_ip)
-    print(binary_mask)
-    print(binary_network)
     print(binary_broadcast)
+    binary_first_host = get_first_host(binary_network)
+    binary_last_host = get_last_host(binary_broadcast)
+    decimal_ip = binary_to_decimal(binary_ip)
+    decimal_netmask = binary_to_decimal(binary_netmask)
+    decimal_network = '/'.join([binary_to_decimal(binary_network), str(cidr)])
+    decimal_broadcast = binary_to_decimal(binary_broadcast)
+    decimal_first_host = binary_to_decimal(binary_first_host)
+    decimal_last_host = binary_to_decimal(binary_last_host)
+
+    print(f'Address: {decimal_ip} {get_formated_binary_address(binary_ip)}')
+    print(f'Netmask: {decimal_netmask} {get_formated_binary_address(binary_netmask)}')
+    print(f'Network: {decimal_network} {binary_network}')
+    print(f'Broadcast: {decimal_broadcast} {binary_broadcast}')
+    print(f'First host: {decimal_first_host} {binary_first_host}')
+    print(f'Last host: {decimal_last_host} {binary_last_host}')
 
 
 
-#main('192.168.0.1 255.255.255.0')
-main('192.168.0.1/24')
+main('192.168.0.1 255.255.128.0')
+#main('192.168.0.1/16')
 #separate_ip_from_mask('192.168.0.1/24')
