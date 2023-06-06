@@ -91,7 +91,6 @@ def get_broadcast(binary_ip, binary_network, cidr):
             else:
                 binary_broadcast[i].append(binary_network[i][j])
                 cidr -= 1
-    print(binary_broadcast)
     return binary_broadcast
 
 def get_cidr(netmask):
@@ -125,7 +124,8 @@ def get_last_host(binary_broadcast):
     binary_last_host[-1][-1] = 0
     return binary_last_host
 
-def main(address_with_mask: str):
+def get_netinfo(address_with_mask: str):
+    net_info = {}
     TYPES_OF_NETMASKS: tuple[str] = ('NETMASK', 'CIDR')
 
     if len(address_with_mask) > 18:
@@ -143,10 +143,10 @@ def main(address_with_mask: str):
         binary_netmask = address_to_binary(netmask)
         cidr = get_cidr(netmask)
 
+
     binary_ip = address_to_binary(ip_address)
     binary_network = get_network(binary_ip, binary_netmask)
     binary_broadcast = get_broadcast(binary_ip, binary_network, cidr)
-    print(binary_broadcast)
     binary_first_host = get_first_host(binary_network)
     binary_last_host = get_last_host(binary_broadcast)
     decimal_ip = binary_to_decimal(binary_ip)
@@ -156,15 +156,19 @@ def main(address_with_mask: str):
     decimal_first_host = binary_to_decimal(binary_first_host)
     decimal_last_host = binary_to_decimal(binary_last_host)
 
-    print(f'Address: {decimal_ip} {get_formated_binary_address(binary_ip)}')
-    print(f'Netmask: {decimal_netmask} {get_formated_binary_address(binary_netmask)}')
-    print(f'Network: {decimal_network} {binary_network}')
-    print(f'Broadcast: {decimal_broadcast} {binary_broadcast}')
-    print(f'First host: {decimal_first_host} {binary_first_host}')
-    print(f'Last host: {decimal_last_host} {binary_last_host}')
+    net_info: dict = {
+        'Address': decimal_ip,
+        'Network': decimal_network,
+        'Netmask': decimal_netmask,
+        'Broadcast': decimal_broadcast,
+        'First Host': decimal_first_host,
+        'Last Host': decimal_last_host,
+        '0bAddress': get_formated_binary_address(binary_ip),
+        '0bNetwork': get_formated_binary_address(binary_network),
+        '0bNetmask': get_formated_binary_address(binary_netmask),
+        '0bBroadcast': get_formated_binary_address(binary_broadcast),
+        '0bFirst Host': get_formated_binary_address(binary_first_host),
+        '0bLast Host': get_formated_binary_address(binary_last_host),
+    }
 
-
-
-main('192.168.0.1 255.255.128.0')
-#main('192.168.0.1/16')
-#separate_ip_from_mask('192.168.0.1/24')
+    return net_info
