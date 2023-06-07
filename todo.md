@@ -19,4 +19,5 @@
 -[x] Variable Binary Broadcast
 -[x] Get formated binary address
 -[ ] Errors codes
--[ ] Start Django project
+-[ ] Calculate number of hosts per subnet
+-[x] Start Django project
