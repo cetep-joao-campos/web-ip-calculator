@@ -6,6 +6,19 @@ def get_formated_binary_address(binary_address: list):
     formated_binary_address = '.'.join(formated_binary_address)
     return formated_binary_address
 
+def get_hosts_per_subnet(cidr):
+    if cidr == 32:
+        hosts_per_subnet = 1
+    elif cidr == 31:
+        hosts_per_subnet = 0
+    elif cidr == 30:
+        hosts_per_subnet = 2
+    else:
+        hosts_bits = 32 - cidr
+        hosts_per_subnet = (2 ** hosts_bits) - 2
+    return hosts_per_subnet
+
+
 def address_to_binary(address: list) -> list:
     binary_address = []
     for octet in address:
@@ -152,6 +165,7 @@ def get_netinfo(address_with_mask: str):
     decimal_broadcast = binary_to_decimal(binary_broadcast)
     decimal_first_host = binary_to_decimal(binary_first_host)
     decimal_last_host = binary_to_decimal(binary_last_host)
+    hosts_p_subnet = get_hosts_per_subnet(cidr)
 
     net_info: dict = {
         'Address': decimal_ip,
@@ -160,6 +174,7 @@ def get_netinfo(address_with_mask: str):
         'Broadcast': decimal_broadcast,
         'First Host': decimal_first_host,
         'Last Host': decimal_last_host,
+        'Hosts p/ subnet': hosts_p_subnet,
         '0bAddress': get_formated_binary_address(binary_ip),
         '0bNetwork': get_formated_binary_address(binary_network),
         '0bNetmask': get_formated_binary_address(binary_netmask),
