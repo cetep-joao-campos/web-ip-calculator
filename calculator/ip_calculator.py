@@ -134,6 +134,54 @@ def get_last_host(binary_broadcast):
     binary_last_host[-1][-1] = 0
     return binary_last_host
 
+def identify_special_address(address: list, cidr):
+    special_address = None
+    if address[0] == 127:
+        special_address = 'Loopback address'
+    elif address[0] == 10:
+        special_address = 'Private use'
+    elif (address[0] == 172
+            and address[1] >= 16
+            and address[1] <= 31):
+        special_address = 'Private use'
+    elif (address[0] == 192
+            and address[1] == 168):
+        special_address = 'Private use'
+    elif (address[0] == 169
+            and address[1] == 254):
+        special_address = 'Link Local - APIPA (Automatic Private IP Addressing)'
+    elif (address[0] == 192 
+            and address[1] == 0
+            and address[2] == 2):
+        special_address = 'Documentation (TEST-NET) RFC 3330 https://datatracker.ietf.org/doc/html/rfc3330'
+    elif (address[0] == 198
+            and address[1] == 51
+            and address[2] == 100):
+        special_address = 'Documentation (TEST-NET-2) RFC 5735 https://datatracker.ietf.org/doc/html/rfc5735'
+    elif (address[0] == 224
+            and address[1] == 0
+            and address[2] == 0
+            and address[3] == 1):
+        special_address = 'Multicast (all nodes)'
+    elif (address[0] == 224
+            and address[1] == 0
+            and address[2] == 0
+            and address[3] == 2):
+        special_address = 'Multicast (all routers)'
+    elif (address[0]
+            and address[1]
+            and address[2]
+            and address[3] == 255
+            and cidr == 32):
+        special_address = 'Limited broadcast (non-routable)'
+    elif ((address[0] == 0)
+            and (address[1] == 0)
+            and (address[2] == 0)
+            and (address[3] == 0)):
+        special_address = 'This host on this network'
+
+    return special_address
+
 def get_netinfo(address_with_mask: str):
     net_info = {}
     TYPES_OF_NETMASKS: tuple[str] = ('NETMASK', 'CIDR')
@@ -153,7 +201,6 @@ def get_netinfo(address_with_mask: str):
         binary_netmask = address_to_binary(netmask)
         cidr = get_cidr(netmask)
 
-
     binary_ip = address_to_binary(ip_address)
     binary_network = get_network(binary_ip, binary_netmask)
     binary_broadcast = get_broadcast(binary_ip, binary_network, cidr)
@@ -166,21 +213,29 @@ def get_netinfo(address_with_mask: str):
     decimal_first_host = binary_to_decimal(binary_first_host)
     decimal_last_host = binary_to_decimal(binary_last_host)
     hosts_p_subnet = get_hosts_per_subnet(cidr)
+    decimal_ip_list = address_to_integer(decimal_ip.split('.'))
 
-    net_info: dict = {
-        'Address': decimal_ip,
-        'Network': decimal_network,
-        'Netmask': decimal_netmask,
-        'Broadcast': decimal_broadcast,
-        'First Host': decimal_first_host,
-        'Last Host': decimal_last_host,
-        'Hosts p/ subnet': hosts_p_subnet,
-        '0bAddress': get_formated_binary_address(binary_ip),
-        '0bNetwork': get_formated_binary_address(binary_network),
-        '0bNetmask': get_formated_binary_address(binary_netmask),
-        '0bBroadcast': get_formated_binary_address(binary_broadcast),
-        '0bFirst Host': get_formated_binary_address(binary_first_host),
-        '0bLast Host': get_formated_binary_address(binary_last_host),
-    }
+    if decimal_ip == '255.255.255.255' and cidr == 32:
+        net_info: dict = {
+            'Address': decimal_ip,
+            'Special address': 'Limited broadcast (non-routable)'
+        }
+    else:
+        net_info: dict = {
+            'Address': decimal_ip,
+            'Network': decimal_network,
+            'Netmask': decimal_netmask,
+            'Broadcast': decimal_broadcast,
+            'First Host': decimal_first_host,
+            'Last Host': decimal_last_host,
+            'Hosts p/ subnet': hosts_p_subnet,
+            'Special address': identify_special_address(decimal_ip_list, cidr),
+            '0bAddress': get_formated_binary_address(binary_ip),
+            '0bNetwork': get_formated_binary_address(binary_network),
+            '0bNetmask': get_formated_binary_address(binary_netmask),
+            '0bBroadcast': get_formated_binary_address(binary_broadcast),
+            '0bFirst Host': get_formated_binary_address(binary_first_host),
+            '0bLast Host': get_formated_binary_address(binary_last_host),
+        }
 
     return net_info
