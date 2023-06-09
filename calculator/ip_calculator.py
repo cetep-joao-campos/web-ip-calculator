@@ -134,30 +134,51 @@ def get_last_host(binary_broadcast):
     binary_last_host[-1][-1] = 0
     return binary_last_host
 
-def identify_special_address(address: list, cidr):
+def identify_special_address(address: list, cidr: int) -> str:
     special_address = None
-    if address[0] == 127:
-        special_address = 'Loopback address'
+    if ((address[0] == 0)
+            and (address[1] == 0)
+            and (address[2] == 0)
+            and (address[3] == 0)):
+        special_address = 'This host on this network'
     elif address[0] == 10:
         special_address = 'Private use'
-    elif (address[0] == 172
-            and address[1] >= 16
-            and address[1] <= 31):
-        special_address = 'Private use'
-    elif (address[0] == 192
-            and address[1] == 168):
-        special_address = 'Private use'
+    elif address[0] == 127:
+        special_address = 'Loopback address'
     elif (address[0] == 169
             and address[1] == 254):
         special_address = 'Link Local - APIPA (Automatic Private IP Addressing)'
+    elif ((address[0] == 172)
+            and (address[1] >= 16)
+            and (address[1] <= 31)):
+        special_address = 'Private use'
+    elif (address[0] == 192
+          and address[1] == 0
+          and address[1] == 0):
+        special_address = 'IETF Protocol Assignments'
     elif (address[0] == 192 
             and address[1] == 0
             and address[2] == 2):
-        special_address = 'Documentation (TEST-NET) RFC 3330 https://datatracker.ietf.org/doc/html/rfc3330'
+        special_address = 'Documentation (TEST-NET-1) RFC 3330 https://datatracker.ietf.org/doc/html/rfc3330'
+    elif (address[0] == 192
+          and address[1] == 88
+          and address[2] == 99):
+        special_address = '6to4 Relay anycast'
+    elif (address[0] == 192
+            and address[1] == 168):
+        special_address = 'Private use'
+    elif (address[0] == 198
+          and (address[1] == 18
+               or address[1] == 19)):
+        special_address = 'Benchmarking'
     elif (address[0] == 198
             and address[1] == 51
             and address[2] == 100):
-        special_address = 'Documentation (TEST-NET-2) RFC 5735 https://datatracker.ietf.org/doc/html/rfc5735'
+        special_address = 'Documentation (TEST-NET-2) RFC 5737 https://www.rfc-editor.org/rfc/rfc5737'
+    elif (address[0] == 203
+          and address[1] == 0
+          and address[2] == 113):
+        special_address = 'Documentation (TEST-NET-3) RFC 5737 https://www.rfc-editor.org/rfc/rfc5737'
     elif (address[0] == 224
             and address[1] == 0
             and address[2] == 0
@@ -168,17 +189,20 @@ def identify_special_address(address: list, cidr):
             and address[2] == 0
             and address[3] == 2):
         special_address = 'Multicast (all routers)'
+    elif (address[0] >= 224
+          and address[0] <= 239):
+        special_address = 'Multicast'
+    elif (address[0] >= 240
+          and address[0] <= 255):
+        special_address = 'Reserved for Future Use'
     elif (address[0]
             and address[1]
             and address[2]
             and address[3] == 255
             and cidr == 32):
         special_address = 'Limited broadcast (non-routable)'
-    elif ((address[0] == 0)
-            and (address[1] == 0)
-            and (address[2] == 0)
-            and (address[3] == 0)):
-        special_address = 'This host on this network'
+    else:
+        special_address = 'Internet'
 
     return special_address
 
