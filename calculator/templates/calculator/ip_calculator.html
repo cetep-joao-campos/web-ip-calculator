@@ -29,13 +29,13 @@
                 </div>
 
                 {% else %}
-                <div class="table-responsive" style="border: 1px solid #9eeaf9; border-radius: 6px;">
+                <div class="table-responsive">
                     <code>
-                        <table class="table table-sm table-info table-striped-columns table-borderless" style="font-family:">
+                        <table class="table table-sm table-striped" style="font-family: 'Courier New'">
                             <tbody>
                                 {% for key, value in netinfo.items %}
                                     {% if value is not None %}
-                                        <tr style="border-bottom: 1px solid lightblue;">
+                                        <tr>
                                            <td><strong>{{ key }}:</strong></td>
                                             {% if key == 'Special address' %}
                                                <td style="color: darkred;">{{ value }}</td>
