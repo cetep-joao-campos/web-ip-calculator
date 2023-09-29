@@ -1,3 +1,5 @@
+# IPv4 functions
+
 def get_formated_binary_address(binary_address: list):
     formated_binary_address = []
     for octet in binary_address:
@@ -206,7 +208,7 @@ def identify_special_address(address: list, cidr: int) -> str:
 
     return special_address
 
-def get_netinfo(address_with_mask: str):
+def get_netinfo(address_with_mask: str) -> dict:
     net_info = {}
     TYPES_OF_NETMASKS: tuple[str] = ('NETMASK', 'CIDR')
 

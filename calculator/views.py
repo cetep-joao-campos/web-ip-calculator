@@ -1,6 +1,8 @@
 from django.shortcuts import render
 from django.views.generic import TemplateView
-from .ip_calculator import get_netinfo
+
+from .ipv4 import get_netinfo
+
 
 class IPCalculatorTemplateView(TemplateView):
     template_name = 'calculator/ip_calculator.html'
