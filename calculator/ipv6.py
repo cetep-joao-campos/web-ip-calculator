@@ -78,10 +78,12 @@ def abbreviate_address(address: list) -> list:
     while len(biggest_quartet_of_zeros) > limiter:
         quartet_to_remove = biggest_quartet_of_zeros.pop()
         abbreviated_address.pop(quartet_to_remove)
+    
+    if len(abbreviated_address) < 3:
+        abbreviated_address.insert(0, '')
 
     abbreviated_address = ':'.join(abbreviated_address)
 
-    print(abbreviated_address)
     return abbreviated_address
 
 def remount_abbreviated_ip6_address(address: list) -> list:
@@ -117,8 +119,6 @@ def validate_ip6(address: str) -> list:
         list_address = remount_abbreviated_ip6_address(list_address)
     if validate_ip6_quartet(list_address) == 1:
         print("Invalid IPv6 address.")
-    else:
-        return None
     return list_address
 
 def get_ipv6_netinfo(address: str):
@@ -139,5 +139,6 @@ ip6_8 = "db8:cafe:0:0:ab0f::"
 ip6_9 = "0:ab0:0:ab0f::a1ef:0"
 ip6_10 = "0000:ab0:0000:ab0f::a1ef:0000"
 ip6_11 = 'ff02::1'
+ip6_12 = '::1'
 
-get_ipv6_netinfo(ip6_11)
+get_ipv6_netinfo(ip6_12)
