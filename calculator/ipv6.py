@@ -127,18 +127,81 @@ def get_ipv6_netinfo(address: str):
     else:
         print(abbreviate_address(validate_ip6(address)))
 
+def get_hosts_per_subnet(cidr):
+    hosts_bits = 128 - cidr
+    hosts_per_subnet = 2 ** hosts_bits
+
+    return hosts_per_subnet
+
+def address_to_binary(address: str) -> list[str]:
+    binary_address = []
+    list_address = list(''.join(address.split(':')))
+    for i in list_address:
+        binary = format(int(i, base=16), '06b')
+        binary_address.append(binary[2:])
+    
+    list_binary_address = list(''.join(binary_address))
+    return list_binary_address
+
+def get_ipv6_prefix(address, cidr) -> list:
+    prefix = []
+    list_binary_address = address_to_binary(address)
+    for i in range(cidr):
+        prefix.append(list_binary_address[i])
+    return prefix
+
+def get_host_min(prefix):
+    host_min = prefix.copy()
+    while len(host_min) < 128:
+        host_min.append('0')
+    print(host_min)
+    return host_min
+
+def get_host_max(prefix):
+    host_max = prefix.copy()
+    while len(host_max) < 128:
+        host_max.append('1')
+    return host_max
+
+def bin_ipv6_addess_to_hex(ipv6_address):
+    address = []
+    duoctet = []
+    quartet = []
+    for bit in ipv6_address:
+        quartet.append(bit)
+        if len(quartet) == 4:
+            dec_quartet = int(''.join(quartet), base=2)
+            duoctet.append(hex(dec_quartet)[2:])
+            quartet = []
+        if len(duoctet) == 4:
+            address.append(''.join(duoctet))
+            duoctet = []
+    print(address)
+
+def get_hosts_per_net(cidr):
+    hosts_per_net = 2**(128 - cidr)
+    return hosts_per_net
+    
+
 ip6 = "2001:0db8:cafe:0000:8e70:5aff:feee:10ac"
-ip6_1 = "2001:0db8:cafe::feee:10ac"
-ip6_2 = "2001:db8::b1"
-ip6_3 = "2001:0db8:cafe:0000:8e70:5aff:feee:10ag"
-ip6_4 = "0db8:cafe:0000:0000:ab0f:00a1"
-ip6_5 = "0db8:cafe:0000:0000:ab0f:0000:0000:0000"
-ip6_6 = "0000:0ab0:0000:ab0f:0000:0000:a1ef:0000"
-ip6_7 = "2001:0db8:0000:0000:0000:0000:0000:00b1"
-ip6_8 = "db8:cafe:0:0:ab0f::"
-ip6_9 = "0:ab0:0:ab0f::a1ef:0"
+ip6_01 = "2001:0db8:cafe::feee:10ac"
+ip6_02 = "2001:db8::b1"
+ip6_03 = "2001:0db8:cafe:0000:8e70:5aff:feee:10ag"
+ip6_04 = "0db8:cafe:0000:0000:ab0f:00a1"
+ip6_05 = "0db8:cafe:0000:0000:ab0f:0000:0000:0000"
+ip6_06 = "0000:0ab0:0000:ab0f:0000:0000:a1ef:0000"
+ip6_07 = "2001:0db8:0000:0000:0000:0000:0000:00b1"
+ip6_08 = "db8:cafe:0:0:ab0f::"
+ip6_09 = "0:ab0:0:ab0f::a1ef:0"
 ip6_10 = "0000:ab0:0000:ab0f::a1ef:0000"
 ip6_11 = 'ff02::1'
 ip6_12 = '::1'
+ip6_13 = '2001:0db8:cd00:0000:0000:0000:0000:0000'
 
-get_ipv6_netinfo(ip6_12)
+#get_ipv6_netinfo(ip6_12)
+cidr = 42
+#get_ipv6_prefix(ip6_13, cidr)
+#address_to_binary(ip6_13)
+host = get_host_max(get_ipv6_prefix(ip6_13, cidr))
+bin_ipv6_addess_to_hex(host)
+print(get_hosts_per_net(cidr))
