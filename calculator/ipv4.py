@@ -76,13 +76,13 @@ def validate_ip(address: str, type_of_mask=''):
         # por enquanto, retornará `None`
         if len(address) == 2:
             if (address < 0) or (address > 32):
-                return {'erro': 'CIDR inválido.'}
+                return 1
         elif len(address) != 4:
-            return {'erro': 'Endereço IP incorreto. Número de octets (4 obrigatoriamente) inválido'}
+            return 1
         else:
             for octet in address:
                 if (octet < 0) or (octet > 255):
-                    return {'erro': 'Endereço IP ou máscara de rede incorreto. octeto fora do intervalo de 0 - 255.'}
+                    return 1
     return address
 
 def get_network(binary_ip, binary_netmask):

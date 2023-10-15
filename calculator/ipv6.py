@@ -115,7 +115,6 @@ def create_ipv6_quartets_list(ipv6_without_colons: list[str]) -> list[str]:
     return ipv6_without_colons
 
 def removes_colons_from_ipv6(ipv6_add: str) -> list[str]:
-    print(ipv6_add)
     ipv6_without_colons = ipv6_add.split(':')
     return ipv6_without_colons
 
@@ -225,10 +224,4 @@ def get_ipv6_netinfo(address: str) -> dict:
             'Host max': ':'.join(host_max),
             'Hosts/net': f'2^({128 - cidr}) = {hosts_per_net}',
         }
-
-    for k, v in net_info.items():
-        print(f'{k}: {v}')
-
-ipv6_14 = '2001:0db8:0000:0000:0000:0000:0000:00b1/42'
-ipv6_a = '2001:db8::b1'
-get_ipv6_netinfo(ipv6_a)
+    return net_info
