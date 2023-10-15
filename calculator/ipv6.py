@@ -1,25 +1,51 @@
-def reduce_quartet(
-        abbreviated_address: list,
-        quartets_reduce: dict,
-        biggest_quartet: dict) -> list:
-    for k in quartets_reduce.keys():
-        if k != biggest_quartet.keys():
-            abbreviated_address[k] == '0'
-        else:
-            abbreviated_address[k] == ''
-    return abbreviated_address
+from typing import Literal
 
-def find_quartets_to_reduce(quartets):
-    big = {}
-    quartets_to_reduce = {}
-    index = 0
-    for quartet in quartets:
-        big[index] = len(quartet)
-    
-    for k, v in big.items():
-        if v > 1:
-            quartets_to_reduce[k] = v
-    return quartets_to_reduce
+
+def remount_abbreviated_ipv6_address(address: list[str]) -> list[str]:
+    c = 0
+    for quartet in address:
+        if quartet == '':
+            address.insert(c,'0000')
+        if len(quartet) < 4:
+            address.pop(c)
+            list_quartet = list(quartet)
+            while len(list_quartet) < 4:
+                list_quartet.insert(0, '0')
+            quartet = ''.join(list_quartet)
+            address.insert(c, quartet)
+        if len(address) > 8:
+            del address[c+1]
+        c += 1
+    return address
+
+def validate_ipv6_quartet(address: list) -> Literal[0, 1]:
+    for quartet in address:
+        try:
+            int(quartet, 16)
+        except:
+            return 1
+    return 0
+
+def validate_ipv6(ipv6_without_colons: list) -> Literal[0, 1]:
+    address = ipv6_without_colons
+    if len(address) > 8:
+        return 1
+    if len(address) < 8:
+        address = remount_abbreviated_ipv6_address(address)
+    if validate_ipv6_quartet(address) == 1:
+        return 1
+    return 0
+
+def join_binary_ipv6(ipv6: list[str]) -> list[str]:
+    binary_ipv6 = list(''.join(ipv6))
+    return binary_ipv6
+
+def ipv6_to_binary(ipv6: list[str]) -> list[str]:
+    binary_ipv6: list = []
+    for quartet in ipv6:
+        binary_quartet = format(int(quartet, base=16), '04b')
+        binary_ipv6.append(binary_quartet)
+    return binary_ipv6
 
 def find_biggest_quartet_of_zeros(quartets):
     big = {'index': 0, 'lenght': 0, 'count': 0}
@@ -33,8 +59,6 @@ def find_biggest_quartet_of_zeros(quartets):
     return big
 
 def abbreviate_address(address: list) -> list:
-    print('Address:')
-    print(address)
     more_quartets = False # True if has more quartets after quartets of zero
     index = 0
     quartets_of_zeros = [[],]
@@ -86,84 +110,33 @@ def abbreviate_address(address: list) -> list:
 
     return abbreviated_address
 
-def remount_abbreviated_ip6_address(address: list) -> list:
-    c = 0
-    for quartet in address:
-        if quartet == '':
-            address.insert(c,'0000')
-        if len(quartet) < 4:
-            address.pop(c)
-            list_quartet = list(quartet)
-            while len(list_quartet) < 4:
-                list_quartet.insert(0, '0')
-            quartet = ''.join(list_quartet)
-            address.insert(c, quartet)
-        if len(address) > 8:
-            del address[c+1]
-        c += 1
-    return address
+def create_ipv6_quartets_list(ipv6_without_colons: list[str]) -> list[str]:
+    ipv6_without_colons = list(''.join(ipv6_without_colons))
+    return ipv6_without_colons
 
-def validate_ip6_quartet(address: list) -> int:
-    for quartet in address:
-        try:
-            int(quartet, 16)
-        except:
-            return 1
-    return 0
+def removes_colons_from_ipv6(ipv6_add: str) -> list[str]:
+    print(ipv6_add)
+    ipv6_without_colons = ipv6_add.split(':')
+    return ipv6_without_colons
 
-def validate_ip6(address: str) -> list:
-    list_address = address.split(':')
-    if len(list_address) > 8:
-        return 1
-    if len(list_address) < 8:
-        list_address = remount_abbreviated_ip6_address(list_address)
-    if validate_ip6_quartet(list_address) == 1:
-        print("Invalid IPv6 address.")
-    return list_address
+def separates_ipv6_from_cidr(address: str) -> list[str]:
+    try:
+        address_and_cidr = address.split('/')
+    except:
+        address_and_cidr = address
+    return address_and_cidr
 
-def get_ipv6_netinfo(address: str):
-    if validate_ip6(address) == 1:
-        print("This is not a valid IPv6.")
-    else:
-        print(abbreviate_address(validate_ip6(address)))
+def address_to_str(address: list[str]) -> str:
+    str_address = ''.join(address)
+    return str_address
 
-def get_hosts_per_subnet(cidr):
-    hosts_bits = 128 - cidr
-    hosts_per_subnet = 2 ** hosts_bits
-
-    return hosts_per_subnet
-
-def address_to_binary(address: str) -> list[str]:
-    binary_address = []
-    list_address = list(''.join(address.split(':')))
-    for i in list_address:
-        binary = format(int(i, base=16), '06b')
-        binary_address.append(binary[2:])
-    
-    list_binary_address = list(''.join(binary_address))
-    return list_binary_address
-
-def get_ipv6_prefix(address, cidr) -> list:
-    prefix = []
-    list_binary_address = address_to_binary(address)
+def get_ipv6_network_duoctets(binary_address: list, cidr: int) -> list:
+    network = []
     for i in range(cidr):
-        prefix.append(list_binary_address[i])
-    return prefix
+        network.append(binary_address[i])
+    return network
 
-def get_host_min(prefix):
-    host_min = prefix.copy()
-    while len(host_min) < 128:
-        host_min.append('0')
-    print(host_min)
-    return host_min
-
-def get_host_max(prefix):
-    host_max = prefix.copy()
-    while len(host_max) < 128:
-        host_max.append('1')
-    return host_max
-
-def bin_ipv6_addess_to_hex(ipv6_address):
+def bin_ipv6_addess_to_hex(ipv6_address: list):
     address = []
     duoctet = []
     quartet = []
@@ -176,32 +149,86 @@ def bin_ipv6_addess_to_hex(ipv6_address):
         if len(duoctet) == 4:
             address.append(''.join(duoctet))
             duoctet = []
-    print(address)
+    return address
 
-def get_hosts_per_net(cidr):
-    hosts_per_net = 2**(128 - cidr)
-    return hosts_per_net
+def get_network_and_host_min(network):
+    host_min = network.copy()
+    while len(host_min) < 128:
+        host_min.append('0')
+    hex_host_min = bin_ipv6_addess_to_hex(host_min)
+    return hex_host_min
+
+def get_host_max(network):
+    host_max = network.copy()
+    while len(host_max) < 128:
+        host_max.append('1')
+    hex_host_max = bin_ipv6_addess_to_hex(host_max)
+    return hex_host_max
+
+def get_ipv6_netinfo(address: str) -> dict:
+    abbreviated_ipv6_address: str
+    full_address: str
+    full_network: str
+    network: str
+    host_min: str
+    host_max: str
+    hosts_per_net: str
+    ip_and_cidr: list = separates_ipv6_from_cidr(address)
+    ipv6_add: str
+    cidr: int
+    net_info: dict
+
+    if len(ip_and_cidr)== 1:
+        ipv6_add = ip_and_cidr[0]
+        cidr = None
+    else:
+        ipv6_add = ip_and_cidr[0]
+        cidr = int(ip_and_cidr[1])
+
+    ipv6_without_colons = removes_colons_from_ipv6(ipv6_add)
+    if len(ipv6_without_colons) < 8:
+        ipv6_without_colons = remount_abbreviated_ipv6_address(
+            ipv6_without_colons)
+
+    full_address = address_to_str(':'.join(ipv6_without_colons))
+
+    if validate_ipv6(ipv6_without_colons) == 1:
+        return 1
     
+    abbreviated_ipv6_address = abbreviate_address(ipv6_without_colons)
+    list_ipv6_quartets = create_ipv6_quartets_list(ipv6_without_colons)
 
-ip6 = "2001:0db8:cafe:0000:8e70:5aff:feee:10ac"
-ip6_01 = "2001:0db8:cafe::feee:10ac"
-ip6_02 = "2001:db8::b1"
-ip6_03 = "2001:0db8:cafe:0000:8e70:5aff:feee:10ag"
-ip6_04 = "0db8:cafe:0000:0000:ab0f:00a1"
-ip6_05 = "0db8:cafe:0000:0000:ab0f:0000:0000:0000"
-ip6_06 = "0000:0ab0:0000:ab0f:0000:0000:a1ef:0000"
-ip6_07 = "2001:0db8:0000:0000:0000:0000:0000:00b1"
-ip6_08 = "db8:cafe:0:0:ab0f::"
-ip6_09 = "0:ab0:0:ab0f::a1ef:0"
-ip6_10 = "0000:ab0:0000:ab0f::a1ef:0000"
-ip6_11 = 'ff02::1'
-ip6_12 = '::1'
-ip6_13 = '2001:0db8:cd00:0000:0000:0000:0000:0000'
+    try:
+        binary_ipv6_add = join_binary_ipv6(ipv6_to_binary(list_ipv6_quartets))
+    except:
+        print('invalid ipv6')
 
-#get_ipv6_netinfo(ip6_12)
-cidr = 42
-#get_ipv6_prefix(ip6_13, cidr)
-#address_to_binary(ip6_13)
-host = get_host_max(get_ipv6_prefix(ip6_13, cidr))
-bin_ipv6_addess_to_hex(host)
-print(get_hosts_per_net(cidr))
+    if cidr == None:
+        net_info = {
+            'Full address': full_address,
+            'Address': abbreviated_ipv6_address,
+        }
+    else:
+        network_bits = get_ipv6_network_duoctets(binary_ipv6_add, cidr)
+        full_network = get_network_and_host_min(network_bits)
+        host_min = get_network_and_host_min(network_bits)
+        host_max = get_host_max(network_bits)
+        network = abbreviate_address(full_network)
+        hosts_per_net = 2**(128 - cidr)
+ 
+        net_info = {
+            'Full address': full_address,
+            'Address': abbreviated_ipv6_address,
+            'Full network': ':'.join(full_network),
+            'Network':  f'{network}/{cidr}',
+            'Host min': ':'.join(host_min),
+            'Host max': ':'.join(host_max),
+            'Hosts/net': f'2^({128 - cidr}) = {hosts_per_net}',
+        }
+
+    for k, v in net_info.items():
+        print(f'{k}: {v}')
+
+ipv6_14 = '2001:0db8:0000:0000:0000:0000:0000:00b1/42'
+ipv6_a = '2001:db8::b1'
+get_ipv6_netinfo(ipv6_a)
