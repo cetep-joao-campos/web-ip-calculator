@@ -1,3 +1,5 @@
+# IPv4 functions
+
 def get_formated_binary_address(binary_address: list):
     formated_binary_address = []
     for octet in binary_address:
@@ -74,13 +76,13 @@ def validate_ip(address: str, type_of_mask=''):
         # por enquanto, retornará `None`
         if len(address) == 2:
             if (address < 0) or (address > 32):
-                return {'erro': 'CIDR inválido.'}
+                return 1
         elif len(address) != 4:
-            return {'erro': 'Endereço IP incorreto. Número de octets (4 obrigatoriamente) inválido'}
+            return 1
         else:
             for octet in address:
                 if (octet < 0) or (octet > 255):
-                    return {'erro': 'Endereço IP ou máscara de rede incorreto. octeto fora do intervalo de 0 - 255.'}
+                    return 1
     return address
 
 def get_network(binary_ip, binary_netmask):
@@ -206,7 +208,7 @@ def identify_special_address(address: list, cidr: int) -> str:
 
     return special_address
 
-def get_netinfo(address_with_mask: str):
+def get_netinfo(address_with_mask: str) -> dict:
     net_info = {}
     TYPES_OF_NETMASKS: tuple[str] = ('NETMASK', 'CIDR')
 
