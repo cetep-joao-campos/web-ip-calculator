@@ -82,7 +82,7 @@ def validate_ip(address: str, type_of_mask=''):
         else:
             for octet in address:
                 if (octet < 0) or (octet > 255):
-                    return 1
+                    return "InvalidIP"
     return address
 
 def get_network(binary_ip, binary_netmask):
@@ -248,20 +248,20 @@ def get_netinfo(address_with_mask: str) -> dict:
         }
     else:
         net_info: dict = {
-            'Address': decimal_ip,
-            'Network': decimal_network,
-            'Netmask': decimal_netmask,
+            'Endereço': decimal_ip,
+            'Rede': decimal_network,
+            'Máscara': decimal_netmask,
             'Broadcast': decimal_broadcast,
-            'First Host': decimal_first_host,
-            'Last Host': decimal_last_host,
-            'Hosts p/ subnet': hosts_p_subnet,
-            'Special address': identify_special_address(decimal_ip_list, cidr),
-            '0bAddress': get_formated_binary_address(binary_ip),
-            '0bNetwork': get_formated_binary_address(binary_network),
-            '0bNetmask': get_formated_binary_address(binary_netmask),
-            '0bBroadcast': get_formated_binary_address(binary_broadcast),
-            '0bFirst Host': get_formated_binary_address(binary_first_host),
-            '0bLast Host': get_formated_binary_address(binary_last_host),
+            'Primeiro Host': decimal_first_host,
+            'Último Host': decimal_last_host,
+            'Hosts/rede': hosts_p_subnet,
+            'Endereço especial': identify_special_address(decimal_ip_list, cidr),
+            'Endereço Bin': get_formated_binary_address(binary_ip),
+            'Rede Bin': get_formated_binary_address(binary_network),
+            'Máscara Bin': get_formated_binary_address(binary_netmask),
+            'Broadcast Bin': get_formated_binary_address(binary_broadcast),
+            'Primeiro Host Bin': get_formated_binary_address(binary_first_host),
+            'Último Host Bin': get_formated_binary_address(binary_last_host),
         }
 
     return net_info

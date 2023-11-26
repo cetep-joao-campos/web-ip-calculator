@@ -200,7 +200,7 @@ def get_ipv6_netinfo(address: str) -> dict:
     try:
         binary_ipv6_add = join_binary_ipv6(ipv6_to_binary(list_ipv6_quartets))
     except:
-        print('invalid ipv6')
+        return 1
 
     if cidr == None:
         net_info = {
@@ -216,12 +216,12 @@ def get_ipv6_netinfo(address: str) -> dict:
         hosts_per_net = 2**(128 - cidr)
  
         net_info = {
-            'Full address': full_address,
-            'Address': abbreviated_ipv6_address,
-            'Full network': ':'.join(full_network),
-            'Network':  f'{network}/{cidr}',
+            'Endereço completo': full_address,
+            'Endereço': abbreviated_ipv6_address,
+            'Rede completa': ':'.join(full_network),
+            'Rede':  f'{network}/{cidr}',
             'Host min': ':'.join(host_min),
             'Host max': ':'.join(host_max),
-            'Hosts/net': f'2^({128 - cidr}) = {hosts_per_net}',
+            'Hosts/rede': f'2^({128 - cidr}) = {hosts_per_net}',
         }
     return net_info

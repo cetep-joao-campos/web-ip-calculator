@@ -7,22 +7,19 @@
 <nav class="navbar bg-body-tertiary">
     <div class="container-fluid">
         <span class="container navbar-text text-center">
-            <h3>IP Calculator by Thiago Jack</h3>
-            <a class="github-button" href="https://github.com/thiagoojack" data-color-scheme="no-preference: light; light: light; dark: dark;" aria-label="Follow @thiagoojack on GitHub">Follow @thiagoojack</a>
-            <a class="github-button" href="https://github.com/thiagoojack/ip-calculator" data-color-scheme="no-preference: light; light: light; dark: dark;" data-icon="octicon-star" aria-label="Star thiagoojack/ip-calculator on GitHub">Star</a>
-            <a class="github-button" href="https://github.com/thiagoojack/ip-calculator/issues" data-color-scheme="no-preference: light; light: light; dark: dark;" data-icon="octicon-issue-opened" aria-label="Issue thiagoojack/ip-calculator on GitHub">Issue</a>
+            <h3>CETEP - Calculadora IP</h3>
+            <a class="github-button" href="https://github.com/cetep-joao-campos" data-color-scheme="no-preference: light; light: light; dark: dark;" aria-label="Follow @thiagoojack on GitHub">Siga @cetep-joao-campos</a>
+            <a class="github-button" href="https://github.com/cetep-joao-campos/web-ip-calculator" data-color-scheme="no-preference: light; light: light; dark: dark;" data-icon="octicon-star" aria-label="Star thiagoojack/ip-calculator on GitHub">Star</a>
+            <a class="github-button" href="https://github.com/cetep-joao-campos/web-ip-calculator/issues" data-color-scheme="no-preference: light; light: light; dark: dark;" data-icon="octicon-issue-opened" aria-label="Issue thiagoojack/ip-calculator on GitHub">Issue</a>
         </span>
     </div>
 </nav>
 <ul class="nav justify-content-center bg-dark border-bottom border-body" data-bs-theme="dark">
     <li class="nav-item">
-      <a class="nav-link" href="https://tjota.blog/">My blog</a>
+      <a class="nav-link" href="https://www.instagram.com/cetepjoaocampos_">Instagram</a>
     </li>
     <li class="nav-item">
-      <a class="nav-link" href="https://mastodon.social/@thiagoojack">Mastondon</a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link" href="https://github.com/thiagoojack">Github</a>
+      <a class="nav-link" href="https://github.com/cetep-joao-campos">Github</a>
     </li>
 </ul>
 
@@ -32,14 +29,15 @@
             <form method="GET" action="{% url 'calculator:calculate_ip' %}">
                 <div class="input-group input-group mb-3">
                     <input type="text" id="ip_with_mask" class="form-control" name="ip_with_mask"
-                        placeholder="IP with Netmask or CIDR" aria-label="IP with Netmask or CIDR"
+                        placeholder="Insira o endereço IPv4 ou IPv6 com máscara ou CIDR" aria-label="IP with Netmask or CIDR"
                         aria-describedby="calculate-button" required>
-                    <input type="submit" class="btn btn-success" id="calculate-button" value="Calculate">
+                    <input type="submit" class="btn btn-success" id="calculate-button" value="Calcular">
                 </div>
 
                 {% if netinfo is empty %}
                 <div class="alert alert-info" role="alert">
-                    192.168.0.28 255.255.255.0 <strong>or</strong> 192.168.0.28/24
+                    <p><strong>Exemplo IPv4:</strong> 172.16.0.19/16 ou 172.16.0.19 255.255.0.0</p>
+                    <strong>Exemplo IPv6:</strong> Abreviado 2001:0db8::b1/42 ou completo 2001:0db8:0000:0000:0000:0000:0000:00b1
                 </div>
 
                 {% else %}
@@ -64,6 +62,7 @@
                     </code>
                 </div>
                 {% endif %}
+                <a href="/" class="btn btn-secondary">Limpar resultado</a>
             </form>
         </div>
     </div>
