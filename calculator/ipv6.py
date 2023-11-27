@@ -22,8 +22,9 @@ def validate_ipv6_quartet(address: list) -> Literal[0, 1]:
     for quartet in address:
         try:
             int(quartet, 16)
-        except:
-            return 1
+        except Exception as e:
+            print(f'Aqui _> {str(e)}')
+            #return 1
     return 0
 
 def validate_ipv6(ipv6_without_colons: list) -> Literal[0, 1]:
@@ -32,8 +33,13 @@ def validate_ipv6(ipv6_without_colons: list) -> Literal[0, 1]:
         return 1
     if len(address) < 8:
         address = remount_abbreviated_ipv6_address(address)
-    if validate_ipv6_quartet(address) == 1:
-        return 1
+    try:
+        for quartet in address:
+            int(quartet, 16)
+    except ValueError:
+        return {'Erro': 'Endereço IP Inssssválido'}
+    #if validate_ipv6_quartet(address) == 1:
+    #    return 1
     return 0
 
 def join_binary_ipv6(ipv6: list[str]) -> list[str]:
@@ -42,9 +48,14 @@ def join_binary_ipv6(ipv6: list[str]) -> list[str]:
 
 def ipv6_to_binary(ipv6: list[str]) -> list[str]:
     binary_ipv6: list = []
-    for quartet in ipv6:
-        binary_quartet = format(int(quartet, base=16), '04b')
-        binary_ipv6.append(binary_quartet)
+    try:
+        for quartet in ipv6:
+            print(quartet)
+            binary_quartet = format(int(quartet, base=16), '04b')
+            print(binary_quartet)
+            binary_ipv6.append(binary_quartet)
+    except Exception as err:
+        print(str(err))
     return binary_ipv6
 
 def find_biggest_quartet_of_zeros(quartets):
@@ -180,6 +191,7 @@ def get_ipv6_netinfo(address: str) -> dict:
     if len(ip_and_cidr)== 1:
         ipv6_add = ip_and_cidr[0]
         cidr = None
+        print(f'caiu aqui {type(ipv6_add)}')
     else:
         ipv6_add = ip_and_cidr[0]
         cidr = int(ip_and_cidr[1])
@@ -200,7 +212,7 @@ def get_ipv6_netinfo(address: str) -> dict:
     try:
         binary_ipv6_add = join_binary_ipv6(ipv6_to_binary(list_ipv6_quartets))
     except:
-        return 1
+        return 4
 
     if cidr == None:
         net_info = {
